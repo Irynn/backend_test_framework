@@ -18,40 +18,58 @@ import static org.junit.Assert.assertTrue;
 
 public class PostsSmokeTests extends BaseTest {
     @BeforeClass
-    public static void setConnection(){
+    public static void setConnection() {
         setServiceConnection();
     }
 
     @Test
-    public void getAllPosts(){
+    public void getAllPosts() {
         Response response = getPosts();
-        response.then()
+
+        response
+                .then()
                 .statusCode(200);
 
-        final List<PostDTO> postsList = response.getBody().jsonPath().getList("", PostDTO.class);
-        assertTrue("Non-empty list of posts is expected",postsList.size()>0 );
+        List<PostDTO> postsList = response
+                .getBody()
+                .jsonPath()
+                .getList("", PostDTO.class);
+
+        assertTrue("Non-empty list of posts is expected", postsList.size() > 0);
     }
 
     @Test
-    public void getSpecificPost(){
+    public void getSpecificPost() {
         Response response = getPostsById(1);
-        response.then()
+
+        response
+                .then()
                 .statusCode(200);
-        PostDTO receivedPost = response.getBody().jsonPath().getObject("", PostDTO.class);
+
+        PostDTO receivedPost = response
+                .getBody()
+                .jsonPath()
+                .getObject("", PostDTO.class);
+
         assertEquals("Post ID is expected to be 1", 1, receivedPost.getId());
     }
 
     @Test
-    public void addNewPost(){
+    public void addNewPost() {
         PostDTO newPost = createNewPost();
         Response response = addPost(newPost);
-        response.then().statusCode(201);
 
-        PostDTO receivedPost = response.getBody().jsonPath().getObject("", PostDTO.class);
+        response
+                .then()
+                .statusCode(201);
+
+        PostDTO receivedPost = response
+                .getBody()
+                .jsonPath()
+                .getObject("", PostDTO.class);
+
         assertEquals("Post titles should match", newPost.getTitle(), receivedPost.getTitle());
         assertEquals("Post bodies should match", newPost.getBody(), receivedPost.getBody());
         assertEquals("Post UserId's should match", newPost.getUserId(), receivedPost.getUserId());
-
     }
-
 }

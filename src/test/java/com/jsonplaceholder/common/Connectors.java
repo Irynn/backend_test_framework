@@ -3,40 +3,29 @@ package com.jsonplaceholder.common;
 import io.restassured.RestAssured;
 import com.jsonplaceholder.utils.PropertiesHandler;
 
+import java.util.Optional;
+
 public class Connectors {
 
-    private static final PropertiesHandler props = PropertiesHandler.getInstance();
-    private static final String URI = props.getProperty("serviceHost");
-
-    public static void setServiceConnection(){
+    public static void setServiceConnection() {
         setServicePort();
         setServiceHost();
         setServiceBasePath();
     }
 
-    private static void setServicePort(){
-        final String port = props.getProperty("servicePort");
-        if (port == null)
-            RestAssured.port = 443;
-        else
-            RestAssured.port = Integer.valueOf(port);
+    private static void setServicePort() {
+        RestAssured.port = Optional.of(PropertiesHandler.INSTANCE.getProperty("servicePort"))
+                .map(Integer::valueOf)
+                .orElse(443);
     }
 
-    private static void setServiceHost(){
-        final String url = props.getProperty("serviceHost");
-
-        if (url == null)
-            RestAssured.baseURI = "https://jsonplaceholder.typicode.com";
-        else
-            RestAssured.baseURI = url;
+    private static void setServiceHost() {
+        RestAssured.baseURI = Optional.ofNullable(PropertiesHandler.INSTANCE.getProperty("serviceHost"))
+                .orElse("https://jsonplaceholder.typicode.com");
     }
 
-    private static void setServiceBasePath(){
-        final String path = props.getProperty("servicePath");
-
-        if (path == null)
-            RestAssured.basePath = "/";
-        else
-            RestAssured.basePath = path;
+    private static void setServiceBasePath() {
+        RestAssured.basePath = Optional.ofNullable(PropertiesHandler.INSTANCE.getProperty("servicePath"))
+                .orElse("/");
     }
 }

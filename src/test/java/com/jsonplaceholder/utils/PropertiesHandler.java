@@ -1,41 +1,35 @@
 package com.jsonplaceholder.utils;
 
-import lombok.Getter;
+import lombok.SneakyThrows;
 
-import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
-import java.util.stream.Stream;
 
-public class PropertiesHandler {
+public enum PropertiesHandler {
+    INSTANCE;
 
-    private static PropertiesHandler instance;
-    @Getter
-    private final Properties properties;
-    private String[] resources = {"remote-config.properties"};
+    private final String[] resources = {"remote-config.properties"};
+    private Properties properties;
 
-    private PropertiesHandler() {
+    @SneakyThrows
+    PropertiesHandler() {
         properties = new Properties();
-        ClassLoader cl = getClass().getClassLoader();
-        Stream.of(resources).forEach(r -> {
-            try (InputStreamReader is = new InputStreamReader(cl.getResourceAsStream(r), "UTF-8")) {
-                properties.load(is);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-    }
+        ClassLoader classLoader = getClass().getClassLoader();
 
-    public static PropertiesHandler getInstance() {
-        if (instance == null) instance = new PropertiesHandler();
-        return instance;
+        for (String resource : resources) {
+            try (InputStream resourceAsStream = classLoader.getResourceAsStream(resource)) {
+                try (InputStreamReader reader = new InputStreamReader(resourceAsStream,
+                        StandardCharsets.UTF_8)) {
+
+                    properties.load(reader);
+                }
+            }
+        }
     }
 
     public String getProperty(String propertyName) {
-        return instance.getProperties().getProperty(propertyName);
-    }
-
-    public Integer getIntProperty(String propertyName) {
-        return Integer.valueOf(instance.getProperties().getProperty(propertyName));
+        return properties.getProperty(propertyName);
     }
 }

@@ -16,23 +16,37 @@ import static junit.framework.TestCase.assertTrue;
 
 public class CommentsTests extends BaseTest {
     @BeforeClass
-    public static void setConnection(){
+    public static void setConnection() {
         setServiceConnection();
     }
 
     @Test
-    public void getCommentsToPost(){
-        int postId = 2;
+    public void getCommentsToPost() {
+        final int postId = 2;
+
         Response response = getCommentsByPostId(postId);
-        response.then()
+
+        response
+                .then()
                 .statusCode(200);
-        List<CommentDTO> receivedComments = response.getBody().jsonPath().getList("", CommentDTO.class);
-        assertTrue("Expected to receive non-empty list of comments", receivedComments.size()>0);
+
+        List<CommentDTO> receivedComments = response
+                .getBody()
+                .jsonPath()
+                .getList("", CommentDTO.class);
+
+        assertTrue("Expected to receive non-empty list of comments", receivedComments.size() > 0);
 
         response = getCommentsToSpecificPost(postId);
-        response.then()
+
+        response
+                .then()
                 .statusCode(200);
-        List<CommentDTO> receivedComments2 = response.getBody().jsonPath().getList("", CommentDTO.class);
+
+        List<CommentDTO> receivedComments2 = response
+                .getBody()
+                .jsonPath()
+                .getList("", CommentDTO.class);
 
         assertEquals("Expected to receive the same amount of comments by all methods",
                 receivedComments.size(),

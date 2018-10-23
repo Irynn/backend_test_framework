@@ -12,6 +12,8 @@ public class BaseTest {
     public static void setup() {
         RestAssured.config().sslConfig(new SSLConfig().allowAllHostnames());
         RestAssured.useRelaxedHTTPSValidation();
-        RestAssured.filters(new ResponseLoggingFilter(LogDetail.ALL), new RequestLoggingFilter(LogDetail.ALL));
+
+        RestAssured.filters(new ResponseLoggingFilter(LogDetail.ALL),
+                new RequestLoggingFilter(LogDetail.ALL));
     }
 }

@@ -9,21 +9,20 @@ import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
 import static com.jsonplaceholder.utils.JsonPOJOConverter.serializeToJson;
 
-
 public class AlbumsRequests {
-    public static Response getAlbums(){
+    public static Response getAlbums() {
         return given()
                 .contentType(JSON)
                 .get(ALBUMS);
     }
 
-    public static Response getAlbumById(int albumId){
+    public static Response getAlbumById(int albumId) {
         return given()
                 .contentType(JSON)
                 .get(ALBUMS_BY_ID, albumId);
     }
 
-    public static Response postAlbum(AlbumDTO album){
+    public static Response postAlbum(AlbumDTO album) {
         return given()
                 .contentType(JSON)
                 .body(serializeToJson(album))
